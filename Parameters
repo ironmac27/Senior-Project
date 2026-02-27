@@ -11,6 +11,7 @@ mu_i = mu_s + mu_a               #interaction coefficient
 m = 10                           #roulette parameter
 w_th = 0.0001
 num_photons = 10000
+g = 0.9
 # ------------------ #
 
 
