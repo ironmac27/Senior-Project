@@ -1,0 +1,11 @@
+import numpy as np
+
+#Absorption Arrays#
+# ------------------ #
+A = np.zeros((Nz, Ny, Nx))
+FirstInteractions = np.zeros((Nz, Ny, Nx))
+# ------------------ #
+
+
+target_position = np.array([center_x, center_y, center_z])
+
