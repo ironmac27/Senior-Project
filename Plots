@@ -1,0 +1,20 @@
+import matplotlib.pyplot as plt
+
+#Plot#
+plt.plot(A[:, Ny//2, Nx//2], label="Z-axis slice (center x,y)")
+plt.plot(A[Nz//2, :, Nx//2], label="Y-axis slice (center x,z)")
+plt.plot(A[Nz//2, Ny//2, :], label="X-axis slice (center y,z)")
+
+plt.xlabel("Index")
+plt.ylabel("Absorption")
+plt.title("Absorption Profiles Through Center Slices")
+plt.legend()   # <-- added legend
+plt.grid(True, alpha=0.3)
+plt.show()
+
+plt.imshow(A[Nz//2, :, :], cmap='hot', origin='lower')
+plt.colorbar(label="Absorption")
+plt.xlabel("x index")
+plt.ylabel("y index")
+plt.title("Absorption slice at z = center")
+plt.show()
