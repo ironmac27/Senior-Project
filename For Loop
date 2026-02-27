@@ -1,0 +1,74 @@
+import numpy as np
+
+for launch_position in [np.array([center_x, center_y, 0.0]),
+                        np.array([center_x, 0.0, center_z]),
+                        np.array([0.0, center_y, center_z])]:
+    for i in range(num_photons):
+        position = launch_position
+        direction = target_position - launch_position
+        direction = direction / np.linalg.norm(direction) #unit vector
+        weight = 1.0 #photon weight suggested in paper
+        
+        while weight > 0:
+            chi = np.random.uniform(0,1,size=1)[0]
+            ds = -np.log(chi) / mu_i
+            position = position + ds * direction
+            drop_weight = (mu_a / mu_i) * weight
+            weight = weight - drop_weight
+            z = position[2]
+            x = position[0]
+            y = position[1]
+            #array control#
+            idx_y = int(y / dy)
+            idx_x = int(x / dx)
+            idx_z = int(z /dz)
+            if idx_y < 0 or idx_y >= Ny:
+               weight = 0
+               continue
+            if idx_x < 0 or idx_x >= Nx:
+               weight = 0
+               continue
+            if idx_z < 0 or idx_z >= Nz:
+                weight = 0
+                continue
+            #scattering#
+            xi = np.random.rand()
+            if g != 0:
+                term = (1 - g**2) / (1 - g + 2*g*xi)
+                cos_theta = (1 + g**2 - term**2) / (2*g)
+            else:
+                cos_theta = 2*xi - 1
+
+            theta = np.arccos(cos_theta)          #angle
+            phi = 2 * np.pi * np.random.rand()    #angle
+
+            ux, uy, uz = direction
+            sin_theta = np.sin(theta)
+            cos_phi = np.cos(phi)
+            sin_phi = np.sin(phi)
+
+            if abs(uz) < 0.99999:
+                sqrt = np.sqrt(1 - uz**2)
+
+                new_ux = (sin_theta * (ux * uz * cos_phi - uy * sin_phi) / sqrt
+                          + ux * cos_theta)
+                new_uy = (sin_theta * (uy * uz * cos_phi + ux * sin_phi) / sqrt
+                          + uy * cos_theta)
+                new_uz = (-sin_theta * cos_phi * sqrt + uz * cos_theta)
+            else:
+                new_ux = sin_theta * cos_phi
+                new_uy = sin_theta * sin_phi
+                new_uz = np.sign(uz) * cos_theta
+
+            direction = np.array([new_ux, new_uy, new_uz])
+            direction = direction / np.linalg.norm(direction)
+            A[idx_z, idx_y, idx_x] += drop_weight
+            weight = weight - drop_weight
+           #Russian Roulette#
+            if weight <= w_th:
+                chi = np.random.uniform(0,1,size=1)[0]
+                if chi <= 1 / m :
+                    weight = m * weight
+                else: 
+                    weight = 0
+                
